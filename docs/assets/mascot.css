@@ -1,0 +1,210 @@
+/* The mummy of Mumbin: how it moves. Used by the program and by the website.
+   Awake it blinks and looks around, asleep its eyes are shut and it dreams. */
+
+.mascot {
+    display: inline-block;
+    line-height: 0;
+}
+
+.mm {
+    display: block;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+}
+
+.mm .mm-pupil,
+.mm .mm-lid,
+.mm .mm-strand,
+.mm .mm-z,
+.mm .mm-arm,
+.mm .mm-breathe {
+    transform-box: fill-box;
+}
+
+.mm-shut,
+.mm-dream {
+    opacity: 0;
+}
+
+/* Awake */
+.mm-awake .mm-pupil {
+    animation: mm-look 7s ease-in-out infinite;
+}
+
+.mm-awake .mm-lid {
+    transform: scaleY(0);
+    transform-origin: 50% 0;
+    animation: mm-blink 5.5s infinite;
+}
+
+.mm-awake .mm-strand {
+    transform-origin: 0 0;
+    animation: mm-sway 3.2s ease-in-out infinite;
+}
+
+.mm-awake {
+    cursor: pointer;
+}
+
+/* It waves hello: the right arm swings up and down a few times, then rests. */
+.mm-wave .mm-arm-right {
+    transform-origin: 0 100%;
+    animation: mm-wave 1.3s ease-in-out 0.5s 3;
+}
+
+/* The sleeper breathes. */
+.mm-asleep .mm-breathe {
+    transform-origin: 50% 100%;
+    animation: mm-breathe 4.2s ease-in-out infinite;
+}
+
+/* The eyes follow the pointer (the website moves the pupils). */
+.mm-follow .mm-pupil {
+    animation: none;
+    transition: transform 0.12s ease-out;
+}
+
+/* A click: the right eye closes for a moment. */
+.mm-wink .mm-lid-right {
+    animation: mm-wink 0.9s ease-in-out;
+}
+
+/* Asleep */
+.mm-asleep .mm-lid {
+    transform: scaleY(1);
+    transform-origin: 50% 0;
+}
+
+.mm-asleep .mm-shut {
+    opacity: 1;
+}
+
+.mm-asleep .mm-dream {
+    opacity: 1;
+}
+
+.mm-asleep .mm-strand {
+    transform-origin: 0 0;
+    animation: mm-sway 6s ease-in-out infinite;
+}
+
+.mm-asleep .mm-z {
+    animation: mm-float 3.4s ease-in-out infinite;
+}
+
+.mm-asleep .mm-z2 {
+    animation-delay: 1.1s;
+}
+
+@keyframes mm-look {
+    0%,
+    18% {
+        transform: translate(0, 0);
+    }
+
+    26%,
+    40% {
+        transform: translate(-2.6px, 0.4px);
+    }
+
+    48%,
+    62% {
+        transform: translate(2.6px, -0.4px);
+    }
+
+    72%,
+    100% {
+        transform: translate(0, 0);
+    }
+}
+
+@keyframes mm-blink {
+    0%,
+    90%,
+    100% {
+        transform: scaleY(0);
+    }
+
+    93%,
+    95% {
+        transform: scaleY(1);
+    }
+}
+
+@keyframes mm-wink {
+    0%,
+    100% {
+        transform: scaleY(0);
+    }
+
+    25%,
+    70% {
+        transform: scaleY(1);
+    }
+}
+
+@keyframes mm-wave {
+    0%,
+    100% {
+        transform: rotate(0);
+    }
+
+    25% {
+        transform: rotate(16deg);
+    }
+
+    55% {
+        transform: rotate(-9deg);
+    }
+
+    80% {
+        transform: rotate(8deg);
+    }
+}
+
+@keyframes mm-breathe {
+    0%,
+    100% {
+        transform: scale(1, 1);
+    }
+
+    50% {
+        transform: scale(1.012, 1.03);
+    }
+}
+
+@keyframes mm-sway {
+    0%,
+    100% {
+        transform: rotate(-5deg);
+    }
+
+    50% {
+        transform: rotate(7deg);
+    }
+}
+
+@keyframes mm-float {
+    0%,
+    100% {
+        opacity: 0.25;
+        transform: translate(0, 2px);
+    }
+
+    50% {
+        opacity: 1;
+        transform: translate(2px, -3px);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .mm .mm-pupil,
+    .mm .mm-lid,
+    .mm .mm-strand,
+    .mm .mm-z,
+    .mm .mm-arm,
+    .mm .mm-breathe {
+        animation: none;
+    }
+}

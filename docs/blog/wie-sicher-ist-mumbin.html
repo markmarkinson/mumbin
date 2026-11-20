@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#0a0a0a">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<title>Wie sicher ist Mumbin? Verschlüsselung einfach erklärt</title>
+<meta name="description" content="Argon2id, XChaCha20-Poly1305 und kein Zugriff ohne Passwort: So schützt Mumbin deine Notizen, und so hältst du die Sicherheit mit einfachen Gewohnheiten hoch.">
+<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1">
+<meta property="og:site_name" content="Mumbin">
+<meta property="og:locale" content="de_DE">
+<meta property="og:title" content="Wie sicher ist Mumbin? Verschlüsselung einfach erklärt">
+<meta property="og:description" content="Argon2id, XChaCha20-Poly1305 und kein Zugriff ohne Passwort: So schützt Mumbin deine Notizen, und so hältst du die Sicherheit mit einfachen Gewohnheiten hoch.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://markmarkinson.github.io/mumbin/blog/wie-sicher-ist-mumbin.html">
+<meta property="og:image" content="https://markmarkinson.github.io/mumbin/assets/social.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Mumbin: die Geist-Mumie hält ein Schild mit dem Namen der App">
+<meta property="article:published_time" content="2026-11-20">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Wie sicher ist Mumbin? Verschlüsselung einfach erklärt">
+<meta name="twitter:description" content="Argon2id, XChaCha20-Poly1305 und kein Zugriff ohne Passwort: So schützt Mumbin deine Notizen, und so hältst du die Sicherheit mit einfachen Gewohnheiten hoch.">
+<meta name="twitter:image" content="https://markmarkinson.github.io/mumbin/assets/social.png">
+<meta name="twitter:image:alt" content="Mumbin: die Geist-Mumie hält ein Schild mit dem Namen der App">
+<link rel="canonical" href="https://markmarkinson.github.io/mumbin/blog/wie-sicher-ist-mumbin.html">
+<link rel="alternate" hreflang="de" href="https://markmarkinson.github.io/mumbin/blog/wie-sicher-ist-mumbin.html">
+<link rel="alternate" hreflang="en" href="https://markmarkinson.github.io/mumbin/en/blog/how-secure-is-mumbin.html">
+<link rel="alternate" hreflang="x-default" href="https://markmarkinson.github.io/mumbin/blog/wie-sicher-ist-mumbin.html">
+<link rel="icon" type="image/svg+xml" href="../assets/favicon.svg?v=2">
+<link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32.png?v=2">
+<link rel="shortcut icon" href="../assets/favicon.ico?v=2">
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png?v=2">
+<link rel="preload" href="../assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../assets/mascot.css">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js" defer></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"Wie sicher ist Mumbin? Die Verschlüsselung einfach erklärt","description":"Argon2id, XChaCha20-Poly1305 und kein Zugriff ohne Passwort: So schützt Mumbin deine Notizen, und so hältst du die Sicherheit mit einfachen Gewohnheiten hoch.","inLanguage":"de","datePublished":"2026-11-20","dateModified":"2026-11-20","image":"https://markmarkinson.github.io/mumbin/assets/social.png","author":{"@type":"Organization","name":"Mumbin","url":"https://markmarkinson.github.io/mumbin/","logo":{"@type":"ImageObject","url":"https://markmarkinson.github.io/mumbin/assets/apple-touch-icon.png"}},"publisher":{"@type":"Organization","name":"Mumbin","url":"https://markmarkinson.github.io/mumbin/","logo":{"@type":"ImageObject","url":"https://markmarkinson.github.io/mumbin/assets/apple-touch-icon.png"}},"mainEntityOfPage":"https://markmarkinson.github.io/mumbin/blog/wie-sicher-ist-mumbin.html","isAccessibleForFree":true}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Mumbin","item":"https://markmarkinson.github.io/mumbin/"},{"@type":"ListItem","position":2,"name":"Blog","item":"https://markmarkinson.github.io/mumbin/blog/"},{"@type":"ListItem","position":3,"name":"Wie sicher ist Mumbin? Die Verschlüsselung einfach erklärt","item":"https://markmarkinson.github.io/mumbin/blog/wie-sicher-ist-mumbin.html"}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Welche Verschlüsselung nutzt Mumbin?","acceptedAnswer":{"@type":"Answer","text":"Mumbin leitet den Schlüssel mit Argon2id aus deinem Passwort ab und verschlüsselt die Inhalte mit XChaCha20-Poly1305. Beide Verfahren stammen aus der Kryptografiebibliothek libsodium und gelten als modern und gut untersucht."}},{"@type":"Question","name":"Gibt es eine Hintertür oder Passwort-Wiederherstellung?","acceptedAnswer":{"@type":"Answer","text":"Nein. Das Passwort gehört nur dir. Deshalb gibt es keine Hintertür, und niemand außer dir kann geschützte Seiten öffnen. Bewahre dein Passwort sicher auf."}},{"@type":"Question","name":"Kann ich die Verschlüsselung selbst nachprüfen?","acceptedAnswer":{"@type":"Answer","text":"Ja. Der Quellcode ist öffentlich einsehbar, und das Format steht im Kopf des unabhängigen Python-Werkzeugs, das geschützte Inhalte mit deinem Passwort auch ohne Mumbin öffnet."}}]}</script>
+</head>
+<body>
+<a class="skip" href="#main">Zum Inhalt springen</a>
+<nav class="nav" aria-label="Hauptnavigation"><div class="nav-inner wrap">
+<a class="brand" href="../" aria-label="Mumbin"><span class="brand-ghost mascot" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" class="mm mm-awake mm-holder" viewBox="-2 0 124 124" aria-hidden="true"><defs><clipPath id="mm-body-8"><path d="M24 108V52Q24 10 60 10Q96 10 96 52V108Q89 100 82 108Q71 100 60 108Q49 100 38 108Q31 100 24 108Z"/></clipPath></defs><g transform="rotate(-8 60 62)"><g fill="none" stroke-linecap="round"><path d="M27 78Q13 84 16 98" stroke="#d3c7ae" stroke-width="15"/><path d="M27 76Q13 82 16 96" stroke="#f3eee3" stroke-width="14"/></g><g fill="none" stroke-linecap="round"><path d="M93 78Q103 84 112 75" stroke="#d3c7ae" stroke-width="15"/><path d="M93 76Q103 82 112 73" stroke="#f3eee3" stroke-width="14"/></g><circle cx="113" cy="73" r="8.5" fill="#f3eee3"/><path d="M24 108V52Q24 10 60 10Q96 10 96 52V108Q89 100 82 108Q71 100 60 108Q49 100 38 108Q31 100 24 108Z" fill="#d3c7ae"/><g clip-path="url(#mm-body-8)"><path d="M24 108V52Q24 10 60 10Q96 10 96 52V108Q89 100 82 108Q71 100 60 108Q49 100 38 108Q31 100 24 108Z" transform="translate(-7 -2)" fill="#f3eee3"/><path d="M18 36Q60 50 102 31" fill="none" stroke="#e50914" stroke-width="15" stroke-linecap="round"/><rect x="26" y="54" width="68" height="30" rx="15" fill="#1a0d0f"/></g><g class="mm-eye"><circle cx="44" cy="69" r="10" fill="#fff"/><g class="mm-pupil"><circle cx="45.6" cy="68" r="4.80" fill="#1a0d0f"/><circle cx="46.50" cy="66.70" r="1.60" fill="#fff"/></g><rect class="mm-lid mm-lid-left" x="33.5" y="58.5" width="21" height="21" fill="#1a0d0f"/></g><g class="mm-eye"><circle cx="76" cy="68.5" r="11" fill="#fff"/><g class="mm-pupil"><circle cx="78" cy="67.3" r="5.28" fill="#1a0d0f"/><circle cx="78.90" cy="66.00" r="1.76" fill="#fff"/></g><rect class="mm-lid mm-lid-right" x="64.5" y="57" width="23" height="23" fill="#1a0d0f"/></g></g></svg></span><span class="brand-sign" aria-hidden="true"><span class="brand-board">Mumbin</span></span></a>
+<div class="nav-links"><a href="../#features">Funktionen</a><a href="../#protection">Schutz</a><a href="../#speed">Tempo</a><a href="../blog/">Blog</a><a href="../#faq">FAQ</a></div>
+<div class="nav-actions"><a class="icon-link" href="https://github.com/markmarkinson/mumbin" aria-label="GitHub" title="GitHub"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg></a><a class="language" href="../en/blog/how-secure-is-mumbin.html" hreflang="en" title="English version"><svg viewBox="0 0 60 30" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><clipPath id="flag-frame"><path d="M0,0 v30 h60 v-30 z"/></clipPath><clipPath id="flag-diagonals"><path d="M30,15 h30 v15 z v15 h-30 z h-30 v-15 z v-15 h30 z"/></clipPath><g clip-path="url(#flag-frame)"><path d="M0,0 v30 h60 v-30 z" fill="#012169"/><path d="M0,0 L60,30 M60,0 L0,30" stroke="#fff" stroke-width="6"/><path d="M0,0 L60,30 M60,0 L0,30" clip-path="url(#flag-diagonals)" stroke="#c8102e" stroke-width="4"/><path d="M30,0 v30 M0,15 h60" stroke="#fff" stroke-width="10"/><path d="M30,0 v30 M0,15 h60" stroke="#c8102e" stroke-width="6"/></g></svg><span>EN</span></a><a class="button primary small" href="../#download">Herunterladen</a></div>
+</div></nav>
+<main id="main" class="wrap"><article class="article">
+<p class="crumbs"><a href="../blog/">Alle Beiträge</a> / Ratgeber / 6 Min. Lesezeit</p>
+<h1>Wie sicher ist Mumbin? Die Verschlüsselung einfach erklärt</h1>
+<p class="lead">Mumbin schützt Notizen mit bewährten, offen dokumentierten Verfahren. Hier erfährst du verständlich, was dahintersteckt und wie du das Beste daraus machst.</p>
+
+<h2>Das Prinzip in einem Satz</h2>
+<p>Dein Passwort wird zu einem starken Schlüssel verarbeitet, und mit diesem Schlüssel werden deine Seiten und Anhänge so verschlüsselt, dass sie ohne das Passwort wie zufällige Daten aussehen.</p>
+
+<h2>Die Bausteine</h2>
+<ul>
+  <li><strong>Argon2id</strong> leitet aus deinem Passwort den Schlüssel ab. Das Verfahren ist absichtlich rechenaufwendig und speicherhungrig, damit Raten im großen Stil mühsam wird.</li>
+  <li><strong>XChaCha20-Poly1305</strong> verschlüsselt die Inhalte. Es ist ein authentifiziertes Verfahren: Verändert jemand eine verschlüsselte Datei, fällt das beim Entschlüsseln auf.</li>
+  <li><strong>Eine geprüfte Bibliothek:</strong> Beide Verfahren kommen aus libsodium, einer weit verbreiteten und gut geprüften Kryptografiebibliothek.</li>
+</ul>
+
+<h2>Drei Schutzarten für unterschiedliche Bedürfnisse</h2>
+<p>Du wählst, wie viel Schutz du brauchst:</p>
+<ul>
+  <li><strong>Eigenes Passwort pro Seite:</strong> getrennter Zugang für einzelne Seiten samt ihren Anhängen.</li>
+  <li><strong>Tresor:</strong> Eine Passphrase schützt alle Seiten, die du dem Tresor übergibst.</li>
+  <li><strong>Versiegeltes Notizbuch:</strong> Alles ist verschlüsselt, auch die Namen der Seiten und Anhänge auf der Festplatte.</li>
+</ul>
+<figure class="frame"><a href="../assets/shots/protect-menu.webp"><img src="../assets/shots/protect-menu.webp" width="1920" height="1200" alt="Seitenmenü mit den Schutzarten und dem Export" loading="lazy" decoding="async"></a><figcaption>Das Seitenmenü: Verschlüsseln, Exportieren, Drucken</figcaption></figure>
+<p>Die Schritte für jede Variante zeigt die Anleitung <a class="text-link" href="../blog/notizen-verschluesseln.html">„Notizen verschlüsseln“</a>.</p>
+
+<h2>Gesperrt heißt wirklich gesperrt</h2>
+<p>Eine gesperrte Seite zeigt nur den Knopf zum Entsperren. Solange sie gesperrt ist, hält Mumbin keine Schlüssel im Speicher. Gesperrte Inhalte tauchen bewusst weder in der Suche noch in der Aufgabenübersicht oder im Export auf. Die automatische Sperre schließt geöffnete Seiten nach einer Leerlaufzeit, die du einstellst.</p>
+<figure class="frame"><a href="../assets/shots/locked.webp"><img src="../assets/shots/locked.webp" width="1920" height="1200" alt="Gesperrte Seite mit Schloss und Entsperren-Knopf" loading="lazy" decoding="async"></a><figcaption>Gesperrt bleibt der Inhalt verborgen</figcaption></figure>
+
+<h2>Offen und nachprüfbar</h2>
+<p>Vertrauen entsteht durch Nachprüfbarkeit. Der Quellcode von Mumbin ist öffentlich einsehbar, automatische Tests prüfen Verschlüsselung und Angriffe auf Dateinamen, und ein unabhängiges Python-Werkzeug entschlüsselt dein Notizbuch mit dem richtigen Passwort auch ohne Mumbin. So bist du nicht von einem einzigen Programm abhängig.</p>
+
+<h2>So holst du das Beste heraus</h2>
+<ul>
+  <li>Wähle ein langes Passwort oder eine Passphrase aus mehreren Wörtern. Für Seitenpasswörter verlangt Mumbin mindestens zehn Zeichen.</li>
+  <li>Verwende für dein Notizbuch ein Passwort, das du nirgendwo sonst nutzt.</li>
+  <li>Bewahre das Passwort sicher auf, zum Beispiel in einem Passwortmanager.</li>
+  <li>Sichere den Notizbuchordner regelmäßig; das geht auch bei verschlüsselten Notizbüchern mit einem einfachen Kopieren.</li>
+  <li>Wenn du Inhalte exportierst, werden entsperrte Seiten im Klartext ausgegeben. Gib Exporte bewusst weiter.</li>
+</ul>
+
+<h2>Häufige Fragen</h2>
+<h3>Welche Verschlüsselung nutzt Mumbin?</h3>
+<p>Mumbin leitet den Schlüssel mit Argon2id aus deinem Passwort ab und verschlüsselt die Inhalte mit XChaCha20-Poly1305. Beide Verfahren stammen aus der Kryptografiebibliothek libsodium und gelten als modern und gut untersucht.</p>
+<h3>Gibt es eine Hintertür oder Passwort-Wiederherstellung?</h3>
+<p>Nein. Das Passwort gehört nur dir. Deshalb gibt es keine Hintertür, und niemand außer dir kann geschützte Seiten öffnen. Bewahre dein Passwort sicher auf.</p>
+<h3>Kann ich die Verschlüsselung selbst nachprüfen?</h3>
+<p>Ja. Der Quellcode ist öffentlich einsehbar, und das Format steht im Kopf des unabhängigen Python-Werkzeugs, das geschützte Inhalte mit deinem Passwort auch ohne Mumbin öffnet.</p>
+
+<div class="next"><span class="eyebrow">Weiter mit</span><a class="text-link" href="../blog/anwendungsfaelle.html">Wofür nutzt man Mumbin? Neun Anwendungsfälle aus dem Alltag →</a></div>
+</article></main>
+<footer class="footer wrap"><span>Mumbin <span aria-hidden="true">/</span> Lokale Notizen. Eigene Gedanken.</span><div class="footer-links"><a href="../blog/">Blog</a><a href="https://github.com/markmarkinson/mumbin">GitHub ↗</a><a href="https://discreveal.com/">DiscReveal ↗</a><a href="../privacy.html">Datenschutz</a><a href="https://github.com/markmarkinson/mumbin/blob/main/LICENSE">Lizenz</a><a href="../third-party-notices.html">Drittanbieter</a></div></footer>
+<div class="legal-line wrap">© 2026 markMarkinson. Alle Rechte vorbehalten.</div>
+</body>
+</html>

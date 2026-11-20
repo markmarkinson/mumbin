@@ -1,0 +1,34 @@
+[package]
+name = "mumbin-core"
+description = "Notebook storage, wiki format, index and search without any UI dependency"
+version.workspace = true
+authors.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+publish.workspace = true
+
+[lints]
+workspace = true
+
+[lib]
+name = "mumbin_core"
+
+[dependencies]
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+chrono = { version = "0.4", default-features = false, features = ["clock", "std"] }
+thiserror = "2"
+trash = "5"
+unicode-normalization = "0.1"
+# Unique temporary files for atomic page writes (notebook.rs), not only for tests.
+tempfile = "3"
+# Encryption (crypto.rs): audited RustCrypto implementations, no own primitives.
+argon2 = "0.5"
+chacha20poly1305 = "0.10"
+zeroize = "1"
+getrandom = "0.3"
+# Keyed hashing for the opaque file names of sealed notebooks (crypto/names.rs).
+blake2 = "0.10"
+
+[target."cfg(windows)".dev-dependencies]
+junction = { version = "2.1.0", default-features = false }

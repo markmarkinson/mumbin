@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://markmarkinson.github.io/mumbin/sitemap.xml
