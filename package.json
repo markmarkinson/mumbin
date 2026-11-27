@@ -1,0 +1,32 @@
+{
+  "name": "mumbin",
+  "version": "0.1.0",
+  "description": "Portable wiki notes for Windows",
+  "author": "markMarkinson",
+  "license": "SEE LICENSE IN LICENSE",
+  "private": true,
+  "scripts": {
+    "tauri": "tauri",
+    "tauri:dev": "tauri dev",
+    "tauri:build": "tauri build --no-bundle",
+    "vendor": "node scripts/buildVendor.js",
+    "dist:portable": "node scripts/buildPortable.js",
+    "test": "node --test tests/*.test.mjs",
+    "test:e2e": "node scripts/runE2e.mjs",
+    "audit": "npm audit && cargo audit",
+    "deny": "cargo deny check licenses bans sources",
+    "perf": "node tests/perf/perf.mjs",
+    "site:build": "node scripts/buildSite.js",
+    "site:notices": "node scripts/buildNotices.js",
+    "live:sync": "node scripts/syncLive.js"
+  },
+  "devDependencies": {
+    "@codemirror/commands": "^6.8.0",
+    "@codemirror/language": "^6.11.0",
+    "@codemirror/search": "^6.5.0",
+    "@codemirror/state": "^6.5.0",
+    "@codemirror/view": "^6.36.0",
+    "@tauri-apps/cli": "^2.12.0",
+    "esbuild": "^0.25.0"
+  }
+}

@@ -1,0 +1,16 @@
+# Settings for `cargo audit` (run from the project root; also `npm run audit`).
+#
+# The five advisories below are "unmaintained" or "unsound" warnings about the Linux/GTK
+# part of Tauri (zbus, glib, proc-macro-error). They sit in Cargo.lock because the lock file
+# covers every platform, but none of them is built into the Windows program:
+#   cargo tree --workspace --target x86_64-pc-windows-msvc -i <crate>   ->  "nothing to print"
+# Checked 2026-11-14. If a Linux build is ever added, review them again. Any advisory that
+# is NOT listed here shows up as a warning or a failure.
+[advisories]
+ignore = [
+    "RUSTSEC-2024-0370", # proc-macro-error is unmaintained (Linux/GTK only)
+    "RUSTSEC-2026-0370", # zvariant is unmaintained (Linux only)
+    "RUSTSEC-2026-0371", # zbus_names is unmaintained (Linux only)
+    "RUSTSEC-2026-0372", # zvariant_derive is unmaintained (Linux only)
+    "RUSTSEC-2024-0429", # glib VariantStrIter unsound (Linux/GTK only)
+]

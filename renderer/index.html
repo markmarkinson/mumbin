@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="color-scheme" content="dark" />
+    <title>Mumbin</title>
+    <link rel="icon" type="image/svg+xml" href="icon.svg" />
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="mascot.css" />
+    <!-- Carries the style nonce of the content security policy; the editor reuses it. -->
+    <style id="style-nonce"></style>
+</head>
+<body>
+    <div class="backdrop" aria-hidden="true"></div>
+
+    <header class="topbar" data-tauri-drag-region>
+        <div class="brand" data-tauri-drag-region>
+            <span class="brand-ghost mascot" data-mascot="holder" data-tauri-drag-region></span>
+            <span class="brand-sign" data-tauri-drag-region><span class="brand-board" data-tauri-drag-region>Mumbin</span></span>
+        </div>
+        <button id="btn-tasks" class="tasks-button" type="button" data-i18n-title="tasks.tip" aria-pressed="false" hidden>
+            <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 4l1.5 1.5L6 2.5M2 10l1.5 1.5L6 8.5M9 4.5h5M9 10.5h5" /></svg>
+            <span data-i18n="tasks.title"></span>
+        </button>
+        <nav id="crumbs" class="crumbs" data-tauri-drag-region></nav>
+        <button id="vault-badge" class="pill" type="button" hidden></button>
+        <button id="readonly-badge" class="pill" type="button" data-i18n="readonly.badge" data-i18n-title="readonly.tip" hidden></button>
+        <button id="btn-menu" class="ghost icon-button" type="button" data-i18n-title="menu.app" aria-haspopup="menu" aria-expanded="false">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19.6 11.0 L22.2 11.3 L22.2 12.7 L19.6 13.0 L18.1 16.7 L19.7 18.7 L18.7 19.7 L16.7 18.1 L13.0 19.6 L12.7 22.2 L11.3 22.2 L11.0 19.6 L7.3 18.1 L5.3 19.7 L4.3 18.7 L5.9 16.7 L4.4 13.0 L1.8 12.7 L1.8 11.3 L4.4 11.0 L5.9 7.3 L4.3 5.3 L5.3 4.3 L7.3 5.9 L11.0 4.4 L11.3 1.8 L12.7 1.8 L13.0 4.4 L16.7 5.9 L18.7 4.3 L19.7 5.3 L18.1 7.3Z" /><circle cx="12" cy="12" r="3.1" /></svg>
+        </button>
+        <div class="window-buttons">
+            <button id="win-min" type="button" data-i18n-title="window.minimize">
+                <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2 6h8" /></svg>
+            </button>
+            <button id="win-max" type="button" data-i18n-title="window.maximize">
+                <svg viewBox="0 0 12 12" aria-hidden="true"><rect x="2.5" y="2.5" width="7" height="7" rx="1.5" /></svg>
+            </button>
+            <button id="win-close" class="danger" type="button" data-i18n-title="window.close">
+                <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 3l6 6M9 3l-6 6" /></svg>
+            </button>
+        </div>
+    </header>
+
+    <div id="loading" class="progress-track" role="progressbar" data-i18n-title="loading" hidden>
+        <div class="progress-fill"></div>
+    </div>
+
+    <main class="layout">
+        <aside id="sidebar" class="sidebar" hidden>
+            <div class="sidebar-head">
+                <span data-i18n="sidebar.pages"></span>
+                <span class="split-button">
+                    <button id="btn-new-page" type="button" data-i18n-title="sidebar.newPage">+</button>
+                    <button id="btn-page-menu" type="button" data-i18n-title="menu.page" aria-haspopup="menu" aria-expanded="false" hidden>
+                        <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 4.5l3 3 3-3" /></svg>
+                    </button>
+                </span>
+            </div>
+            <form id="new-page-form" class="new-page" hidden>
+                <input id="new-page-input" type="text" autocomplete="off" spellcheck="false" data-i18n-placeholder="sidebar.newPagePlaceholder" />
+            </form>
+            <form id="search-form" class="new-page">
+                <input id="search-input" type="search" data-i18n-placeholder="search.placeholder" data-i18n-title="search.hint" />
+                <button class="secondary small" type="submit" data-i18n="search.submit"></button>
+            </form>
+            <div id="search-results" class="search-results" aria-live="polite" hidden></div>
+            <div id="tree" class="tree" role="tree"></div>
+            <div id="dock" class="dock" hidden>
+                <div class="dock-tabs" role="tablist">
+                    <button type="button" role="tab" data-dock="backlinks" data-i18n-title="dock.links" aria-selected="false"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M7.5 10.5l3-3M8 5.5l1-1a3 3 0 014.2 4.2l-1 1M10 12.5l-1 1a3 3 0 01-4.2-4.2l1-1"/></svg></button>
+                    <button type="button" role="tab" data-dock="attachments" data-i18n-title="dock.files" aria-selected="false"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M14.5 8.5l-5.4 5.4a3.2 3.2 0 01-4.5-4.5l5.6-5.6a2.1 2.1 0 013 3L8.1 12.3a1 1 0 01-1.5-1.5L11.5 6"/></svg><span id="attachments-count" class="count"></span></button>
+                    <button type="button" role="tab" data-dock="tags" data-i18n-title="dock.tags" aria-selected="false"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M2.5 9.2V3.5h5.7l7 7a1.4 1.4 0 010 2l-3.7 3.7a1.4 1.4 0 01-2 0z"/><circle cx="5.6" cy="6.6" r="0.9"/></svg><span id="tags-count" class="count"></span></button>
+                    <button type="button" role="tab" data-dock="outline" data-i18n-title="dock.outline" aria-selected="false"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M6.5 4.5h9M6.5 9h9M6.5 13.5h9M2.5 4.5h1.2M2.5 9h1.2M2.5 13.5h1.2"/></svg></button>
+                </div>
+                <section id="backlinks" class="search-results" aria-live="polite" hidden></section>
+                <section id="attachments" class="dock-panel" hidden>
+                    <div class="attach-actions">
+                        <button id="btn-attach-add" class="secondary small" type="button" data-i18n="attach.add"></button>
+                        <button id="btn-attach-folder" class="secondary small" type="button" data-i18n="attach.folder"></button>
+                    </div>
+                    <div id="attach-list" class="attach-list"></div>
+                </section>
+                <section id="outline" class="dock-panel" hidden>
+                    <div id="outline-list" class="outline-list" role="list"></div>
+                </section>
+                <section id="tags" class="dock-panel" hidden>
+                    <div id="tag-cloud" class="tag-cloud"></div>
+                    <div id="tag-pages" class="tag-pages" aria-live="polite"></div>
+                </section>
+            </div>
+            <div class="sidebar-foot">
+                <button id="btn-notebook" class="notebook-switch" type="button" data-i18n-title="notebooks.manage">
+                    <span id="notebook-lock" class="notebook-lock" hidden></span>
+                    <span id="notebook-name" data-i18n="notebook.none"></span>
+                    <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 4.5l3 3 3-3" /></svg>
+                </button>
+            </div>
+        </aside>
+
+        <section class="content">
+            <div id="welcome" class="welcome">
+                <span class="welcome-mascot mascot" data-mascot="wave"></span>
+                <h1 data-i18n="welcome.title"></h1>
+                <p data-i18n="welcome.text"></p>
+                <div class="welcome-actions">
+                    <button id="btn-open" class="primary" type="button" data-i18n="welcome.open"></button>
+                    <button id="btn-create" class="secondary" type="button" data-i18n="welcome.create"></button>
+                </div>
+                <div id="welcome-recent" class="welcome-recent" hidden></div>
+            </div>
+
+            <div id="tasks" class="tasks" hidden>
+                <header class="tasks-head">
+                    <h2 data-i18n="tasks.title"></h2>
+                    <input id="tasks-query" type="text" autocomplete="off" spellcheck="false" data-i18n-placeholder="tasks.filter" />
+                </header>
+                <div id="tasks-modes" class="segments">
+                    <button type="button" data-mode="open"></button>
+                    <button type="button" data-mode="active"></button>
+                    <button type="button" data-mode="waiting"></button>
+                    <button type="button" data-mode="due"></button>
+                    <button type="button" data-mode="done"></button>
+                    <button id="tasks-group" type="button" data-i18n="tasks.group" data-i18n-title="tasks.groupTip"></button>
+                </div>
+                <p class="tasks-hint" data-i18n="tasks.hint"></p>
+                <div id="tasks-list" class="tasks-list" role="list"></div>
+            </div>
+
+            <div id="page" class="page" hidden>
+                <div id="conflict" class="banner" hidden>
+                    <span data-i18n="conflict.text"></span>
+                    <button id="btn-keep-mine" class="secondary small" type="button" data-i18n="conflict.keepMine"></button>
+                    <button id="btn-reload" class="secondary small" type="button" data-i18n="conflict.reload"></button>
+                </div>
+                <div id="locked-panel" class="locked-panel" hidden>
+                    <span class="locked-mascot mascot" data-mascot="asleep"></span>
+                    <h2 id="locked-title" data-i18n="vault.lockedTitle"></h2>
+                    <p id="locked-text" data-i18n="vault.lockedText"></p>
+                    <button id="locked-open" class="primary" type="button" data-i18n="vault.unlockButton"></button>
+                </div>
+                <div id="format-bar" class="format-bar" role="toolbar" data-i18n-title="format.label">
+                    <button type="button" data-command="format.bold" data-i18n-title="tip.bold"><strong>B</strong></button>
+                    <button type="button" data-command="format.italic" data-i18n-title="tip.italic"><em>I</em></button>
+                    <button type="button" data-command="format.mark" data-i18n-title="tip.mark"><mark>M</mark></button>
+                    <button type="button" data-command="format.strike" data-i18n-title="tip.strike"><s>S</s></button>
+                    <button type="button" data-command="format.code" data-i18n-title="tip.code">&lt;/&gt;</button>
+                    <span class="bar-gap"></span>
+                    <button type="button" data-command="format.heading1" data-i18n-title="tip.heading1">H1</button>
+                    <button type="button" data-command="format.heading2" data-i18n-title="tip.heading2">H2</button>
+                    <button type="button" data-command="format.heading3" data-i18n-title="tip.heading3">H3</button>
+                    <span class="bar-gap"></span>
+                    <button type="button" data-command="format.bullet" data-i18n-title="tip.bullet">•</button>
+                    <button type="button" data-command="format.number" data-i18n-title="tip.number">1.</button>
+                    <button type="button" data-command="format.check" data-i18n-title="tip.check">☐</button>
+                    <span class="bar-gap"></span>
+                    <button type="button" data-command="insert.link" data-i18n-title="tip.link">
+                        <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M6.5 9.5l3-3M7.2 4.6l.9-.9a2.6 2.6 0 013.7 3.7l-.9.9M8.8 11.4l-.9.9a2.6 2.6 0 01-3.7-3.7l.9-.9" /></svg>
+                    </button>
+                    <button type="button" data-command="insert.attachment" data-i18n-title="tip.attachment">
+                        <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M11.5 7.2L7.2 11.5a2.1 2.1 0 01-3-3L9 3.7a1.4 1.4 0 012 2L6.6 10.1" /></svg>
+                    </button>
+                    <button type="button" data-command="insert.table" data-i18n-title="tip.table">
+                        <svg viewBox="0 0 16 16" aria-hidden="true"><rect x="2.5" y="3.5" width="11" height="9" rx="1.5" /><path d="M2.5 7h11M7 3.5v9" /></svg>
+                    </button>
+                    <button type="button" data-command="insert.date" data-i18n-title="tip.date">
+                        <svg viewBox="0 0 16 16" aria-hidden="true"><rect x="2.5" y="3.5" width="11" height="10" rx="1.5" /><path d="M2.5 7h11M5.5 2v3M10.5 2v3" /></svg>
+                    </button>
+                    <span class="bar-space"></span>
+                    <button type="button" data-command="nav.jump" data-i18n-title="tip.jump">
+                        <svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="4.5" /><path d="M10.5 10.5L14 14" /></svg>
+                    </button>
+                    <button type="button" data-command="help.open" data-i18n-title="tip.help">?</button>
+                    <button id="save-state" class="save-state" type="button" data-command="page.save" hidden>
+                        <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 2.5h7.2l2.8 2.8v7.7a.5.5 0 01-.5.5h-9.5a.5.5 0 01-.5-.5V3a.5.5 0 01.5-.5zM5.5 2.5v3h4.5v-3M5 13.5v-4h6v4" /></svg>
+                    </button>
+                </div>
+                <div id="editor" class="editor"></div>
+            </div>
+        </section>
+    </main>
+
+    <div id="app-menu" class="menu" role="menu" hidden>
+        <button type="button" role="menuitem" data-command="settings.open" data-i18n="cmd.settings.open"></button>
+        <button type="button" role="menuitem" data-command="notebook.switch" data-i18n="menu.notebooks"></button>
+        <button type="button" role="menuitem" data-command="vault.manage" data-i18n="cmd.vault.manage"></button>
+        <button type="button" role="menuitem" data-command="nav.palette" data-i18n="menu.allCommands"></button>
+        <button type="button" role="menuitem" data-command="help.open" data-i18n="cmd.help.open"></button>
+        <button type="button" role="menuitem" data-command="about.open" data-i18n="cmd.about.open"></button>
+    </div>
+
+    <dialog id="dlg-notebooks" class="dialog">
+        <form id="dlg-notebooks-form" method="dialog">
+            <h2 data-i18n="notebooks.title"></h2>
+            <p class="dialog-text" data-i18n="notebooks.text"></p>
+            <ul id="notebooks-list" class="notebooks-list"></ul>
+            <p id="notebooks-empty" class="dialog-hint" data-i18n="notebooks.empty" hidden></p>
+            <div class="notebooks-actions">
+                <button id="notebooks-open" class="primary" type="button" data-i18n="notebooks.openFolder"></button>
+                <button id="notebooks-create" class="secondary" type="button" data-i18n="notebooks.createShort"></button>
+            </div>
+            <div class="dialog-actions">
+                <button class="ghost-button" type="submit" data-i18n="common.done"></button>
+            </div>
+        </form>
+    </dialog>
+
+    <div id="edit-menu" class="menu" role="menu" hidden>
+        <button type="button" role="menuitem" data-edit="undo" data-i18n="edit.undo"></button>
+        <button type="button" role="menuitem" data-edit="cut" data-i18n="edit.cut"></button>
+        <button type="button" role="menuitem" data-edit="copy" data-i18n="edit.copy"></button>
+        <button type="button" role="menuitem" data-edit="paste" data-i18n="edit.paste"></button>
+        <button type="button" role="menuitem" data-edit="selectAll" data-i18n="edit.selectAll"></button>
+    </div>
+
+    <div id="page-menu" class="menu" role="menu" hidden>
+        <button type="button" role="menuitem" data-action="newSub" data-i18n="menu.newSub"></button>
+        <button type="button" role="menuitem" data-action="rename" data-i18n="menu.rename"></button>
+        <button type="button" role="menuitem" data-action="copyName" data-i18n="menu.copyName"></button>
+        <button type="button" role="menuitem" data-action="folder" data-i18n="menu.folder"></button>
+        <button type="button" role="menuitem" data-action="toggleEncrypted" data-i18n="menu.encryptPage" hidden></button>
+        <button type="button" role="menuitem" data-action="protectPage" data-i18n="menu.protectPage" hidden></button>
+        <button type="button" role="menuitem" data-action="changePagePassword" data-i18n="menu.changePagePassword" hidden></button>
+        <button type="button" role="menuitem" data-action="removePageProtection" data-i18n="menu.removePageProtection" hidden></button>
+        <button type="button" role="menuitem" data-action="lockPage" data-i18n="menu.lockPage" hidden></button>
+        <button type="button" role="menuitem" data-action="print" data-i18n="menu.print"></button>
+        <button type="button" role="menuitem" data-action="exportPage" data-i18n="menu.exportPage"></button>
+        <button type="button" role="menuitem" data-action="exportNotebook" data-i18n="menu.exportNotebook"></button>
+        <button class="danger" type="button" role="menuitem" data-action="delete" data-i18n="menu.delete"></button>
+    </div>
+
+    <dialog id="dlg-move" class="dialog">
+        <form id="dlg-move-form" method="dialog">
+            <h2 data-i18n="move.title"></h2>
+            <label>
+                <span data-i18n="move.label"></span>
+                <input id="dlg-move-input" type="text" autocomplete="off" spellcheck="false" required />
+            </label>
+            <p class="dialog-hint" data-i18n="move.hint"></p>
+            <label class="check">
+                <input id="dlg-move-links" type="checkbox" checked />
+                <span data-i18n="move.links"></span>
+            </label>
+            <div class="dialog-actions">
+                <button id="dlg-move-cancel" class="secondary" type="button" data-i18n="common.cancel"></button>
+                <button class="primary" type="submit" data-i18n="move.confirm"></button>
+            </div>
+        </form>
+    </dialog>
+
+    <dialog id="dlg-task-dates" class="dialog">
+        <form id="dlg-task-dates-form" method="dialog">
+            <h2 data-i18n="taskDates.title"></h2>
+            <p id="dlg-task-dates-name" class="dialog-text"></p>
+            <label>
+                <span data-i18n="taskDates.start"></span>
+                <input id="task-start" type="date" />
+            </label>
+            <label>
+                <span data-i18n="taskDates.due"></span>
+                <input id="task-due" type="date" />
+            </label>
+            <p class="dialog-hint" data-i18n="taskDates.hint"></p>
+            <div class="dialog-actions">
+                <button id="dlg-task-dates-cancel" class="secondary" type="button" data-i18n="common.cancel"></button>
+                <button class="primary" type="submit" data-i18n="taskDates.save"></button>
+            </div>
+        </form>
+    </dialog>
+
+    <dialog id="dlg-delete" class="dialog">
+        <form id="dlg-delete-form" method="dialog">
+            <h2 data-i18n="delete.title"></h2>
+            <p id="dlg-delete-text" class="dialog-text"></p>
+            <div class="dialog-actions">
+                <button id="dlg-delete-cancel" class="secondary" type="button" data-i18n="common.cancel"></button>
+                <button id="dlg-delete-confirm" class="primary danger" type="submit"></button>
+            </div>
+        </form>
+    </dialog>
+
+    <dialog id="dlg-drop" class="dialog">
+        <form id="dlg-drop-form" method="dialog">
+            <h2 data-i18n="drop.title"></h2>
+            <p id="dlg-drop-text" class="dialog-text"></p>
+            <div class="dialog-actions">
+                <button id="dlg-drop-cancel" class="secondary" type="button" data-i18n="common.cancel"></button>
+                <button id="dlg-drop-link" class="secondary" type="button" data-i18n="drop.link"></button>
+                <button id="dlg-drop-copy" class="primary" type="submit" data-i18n="drop.copy"></button>
+            </div>
+        </form>
+    </dialog>
+
+    <dialog id="dlg-name" class="dialog">
+        <form id="dlg-name-form" method="dialog">
+            <h2 data-i18n="notebook.nameTitle"></h2>
+            <label>
+                <span data-i18n="notebook.nameLabel"></span>
+                <input id="dlg-name-input" type="text" autocomplete="off" spellcheck="false" required />
+            </label>
+            <div class="dialog-actions">
+                <button id="dlg-name-cancel" class="secondary" type="button" data-i18n="common.cancel"></button>
+                <button class="primary" type="submit" data-i18n="notebook.createConfirm"></button>
+            </div>
+        </form>
+    </dialog>
+
+    <dialog id="dlg-attach-rename" class="dialog">
+        <form id="dlg-attach-rename-form" method="dialog">
+            <h2 data-i18n="attach.renameTitle"></h2>
+            <label>
+                <span data-i18n="attach.renameLabel"></span>
+                <input id="dlg-attach-rename-input" type="text" autocomplete="off" spellcheck="false" required />
+            </label>
+            <div class="dialog-actions">
+                <button id="dlg-attach-rename-cancel" class="secondary" type="button" data-i18n="common.cancel"></button>
+                <button class="primary" type="submit" data-i18n="attach.renameConfirm"></button>
+            </div>
+        </form>
+    </dialog>
+
+    <dialog id="dlg-attach-delete" class="dialog">
+        <form id="dlg-attach-delete-form" method="dialog">
+            <h2 data-i18n="attach.deleteTitle"></h2>
+            <p id="dlg-attach-delete-text" class="dialog-text"></p>
+            <div class="dialog-actions">
+                <button id="dlg-attach-delete-cancel" class="secondary" type="button" data-i18n="common.cancel"></button>
+                <button id="dlg-attach-delete-confirm" class="primary danger" type="submit" data-i18n="attach.deleteConfirm"></button>
+            </div>
+        </form>
+    </dialog>
+
+    <dialog id="dlg-vault" class="dialog">
+        <form id="dlg-vault-form" method="dialog" autocomplete="off">
+            <h2 id="vault-title"></h2>
+            <p id="vault-text" class="dialog-text"></p>
+            <label id="vault-old-row" class="setting" hidden>
+                <span id="vault-old-label" data-i18n="vault.oldPassphrase"></span>
+                <input id="vault-old" type="password" autocomplete="off" spellcheck="false" />
+            </label>
+            <label class="setting">
+                <span id="vault-new-label"></span>
+                <input id="vault-new" type="password" autocomplete="off" spellcheck="false" required />
+            </label>
+            <div id="vault-strength" class="strength" data-level="0" hidden>
+                <span class="strength-bars" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+                <span id="vault-strength-text" aria-live="polite"></span>
+            </div>
+            <p id="vault-strength-hint" class="dialog-hint" hidden></p>
+            <label id="vault-again-row" class="setting">
+                <span data-i18n="vault.again"></span>
+                <input id="vault-again" type="password" autocomplete="off" spellcheck="false" />
+            </label>
+            <p id="vault-warning" class="dialog-hint warning" data-i18n="vault.warning"></p>
+            <p id="vault-error" class="dialog-hint error" role="alert" hidden></p>
+            <div class="dialog-actions">
+                <button id="vault-cancel" class="secondary" type="button" data-i18n="common.cancel"></button>
+                <button id="vault-confirm" class="primary" type="submit"></button>
+            </div>
+        </form>
+    </dialog>
+
+    <dialog id="dlg-crypto" class="dialog">
+        <form id="dlg-crypto-form" method="dialog">
+            <h2 data-i18n="vault.manageTitle"></h2>
+            <p id="vault-status-text" class="dialog-text"></p>
+            <div class="vault-actions">
+                <button id="vault-act-create" class="primary" type="button" data-i18n="vault.act.create"></button>
+                <button id="vault-act-unlock" class="primary" type="button" data-i18n="vault.act.unlock"></button>
+                <button id="vault-act-lock" class="secondary" type="button" data-i18n="vault.act.lock"></button>
+                <button id="vault-act-encrypt-all" class="secondary" type="button" data-i18n="vault.act.encryptAll"></button>
+                <button id="vault-act-decrypt-all" class="secondary" type="button" data-i18n="vault.act.decryptAll"></button>
+                <button id="vault-act-change" class="secondary" type="button" data-i18n="vault.act.change"></button>
+            </div>
+            <label id="vault-autolock-row" class="setting" hidden>
+                <span data-i18n="vault.autoLock"></span>
+                <select id="vault-autolock">
+                    <option value="0" data-i18n="vault.autoLockNever"></option>
+                    <option value="1">1 min</option>
+                    <option value="5">5 min</option>
+                    <option value="10">10 min</option>
+                    <option value="30">30 min</option>
+                    <option value="60">60 min</option>
+                </select>
+            </label>
+            <h3 data-i18n="vault.backupTitle"></h3>
+            <p class="dialog-hint" data-i18n="vault.backupText"></p>
+            <div class="vault-actions">
+                <button id="vault-act-tool" class="secondary" type="button" data-i18n="vault.act.tool"></button>
+            </div>
+            <div class="dialog-actions">
+                <button class="primary" type="submit" data-i18n="common.done"></button>
+            </div>
+        </form>
+    </dialog>
+
+    <dialog id="dlg-palette" class="dialog palette">
+        <h2 id="palette-title"></h2>
+        <input id="palette-input" type="text" autocomplete="off" spellcheck="false" data-i18n-placeholder="palette.placeholder" />
+        <ul id="palette-list" class="palette-list" role="listbox"></ul>
+        <p id="palette-empty" class="dialog-hint" data-i18n="palette.empty" hidden></p>
+        <p class="palette-keys" data-i18n="palette.keys"></p>
+    </dialog>
+
+    <dialog id="dlg-link" class="dialog">
+        <form id="dlg-link-form" method="dialog">
+            <h2 data-i18n="link.title"></h2>
+            <label>
+                <span data-i18n="link.target"></span>
+                <input id="link-target" type="text" list="link-targets" autocomplete="off" spellcheck="false" />
+                <datalist id="link-targets"></datalist>
+            </label>
+            <p class="dialog-hint" data-i18n="link.hint"></p>
+            <label>
+                <span data-i18n="link.text"></span>
+                <input id="link-text" type="text" autocomplete="off" />
+            </label>
+            <div class="dialog-actions">
+                <button id="link-remove" class="secondary danger" type="button" data-i18n="link.remove" hidden></button>
+                <span class="bar-space"></span>
+                <button id="link-cancel" class="secondary" type="button" data-i18n="common.cancel"></button>
+                <button class="primary" type="submit" data-i18n="link.confirm"></button>
+            </div>
+        </form>
+    </dialog>
+
+    <dialog id="dlg-settings" class="dialog">
+        <form id="dlg-settings-form" method="dialog">
+            <h2 data-i18n="settings.title"></h2>
+            <label class="setting">
+                <span data-i18n="settings.language"></span>
+                <select id="set-language">
+                    <option value="de">Deutsch</option>
+                    <option value="en">English</option>
+                </select>
+            </label>
+            <label class="setting">
+                <span><span data-i18n="settings.fontSize"></span> <output id="set-font-size-value"></output></span>
+                <input id="set-font-size" type="range" min="11" max="26" step="1" />
+            </label>
+            <label class="check">
+                <input id="set-template" type="checkbox" />
+                <span data-i18n="settings.template"></span>
+            </label>
+            <label class="check">
+                <input id="set-sidebar" type="checkbox" />
+                <span data-i18n="settings.sidebar"></span>
+            </label>
+            <div id="set-notebook" hidden>
+                <h3 data-i18n="settings.notebook"></h3>
+                <label class="check">
+                    <input id="set-trash" type="checkbox" />
+                    <span data-i18n="settings.trash"></span>
+                </label>
+                <label class="check">
+                    <input id="set-encrypt-new" type="checkbox" />
+                    <span data-i18n="settings.encryptNew"></span>
+                </label>
+                <p id="set-encrypt-hint" class="dialog-hint" hidden></p>
+                <label class="setting">
+                    <span data-i18n="settings.templatePage"></span>
+                    <input id="set-template-page" type="text" list="set-template-pages" autocomplete="off" spellcheck="false" data-i18n-placeholder="settings.templatePageEmpty" />
+                    <datalist id="set-template-pages"></datalist>
+                </label>
+                <p class="dialog-hint" data-i18n="settings.templatePageHint"></p>
+            </div>
+            <p class="dialog-hint" data-i18n="settings.portable"></p>
+            <p id="set-version" class="dialog-hint"></p>
+            <div class="dialog-actions">
+                <button class="primary" type="submit" data-i18n="common.done"></button>
+            </div>
+        </form>
+    </dialog>
+
+    <dialog id="dlg-about" class="dialog">
+        <form id="dlg-about-form" method="dialog">
+            <h2 class="about-title"><span class="about-mascot mascot" data-mascot="awake"></span>Mumbin <span id="about-version"></span></h2>
+            <p class="dialog-text" data-i18n="about.text"></p>
+            <dl class="about-list">
+                <dt data-i18n="about.program"></dt><dd id="about-program"></dd>
+                <dt data-i18n="about.data"></dt><dd id="about-data"></dd>
+                <dt data-i18n="about.log"></dt><dd id="about-log"></dd>
+            </dl>
+            <div class="dialog-actions">
+                <button id="about-open-data" class="secondary" type="button" data-i18n="about.openData"></button>
+                <button class="primary" type="submit" data-i18n="common.done"></button>
+            </div>
+        </form>
+    </dialog>
+
+    <dialog id="dlg-help" class="dialog help">
+        <form id="dlg-help-form" method="dialog">
+            <h2 data-i18n="help.title"></h2>
+            <p class="dialog-hint" data-i18n="help.intro"></p>
+            <div id="help-body" class="help-body"></div>
+            <div class="dialog-actions">
+                <button class="primary" type="submit" data-i18n="common.done"></button>
+            </div>
+        </form>
+    </dialog>
+
+    <div id="lightbox" class="lightbox" role="dialog" data-i18n-title="lightbox.title" aria-modal="true" hidden>
+        <img id="lightbox-img" alt="" />
+        <button id="lightbox-close" class="ghost round" type="button" data-i18n-title="window.close">✕</button>
+        <p class="lightbox-hint" data-i18n="lightbox.hint"></p>
+    </div>
+
+    <div id="toast" class="toast" role="alert" hidden></div>
+
+    <script type="module" src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,31 @@
+[package]
+name = "mumbin"
+description = "Portable wiki notes for Windows"
+version.workspace = true
+authors.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+publish.workspace = true
+
+[lints]
+workspace = true
+
+[lib]
+name = "mumbin_lib"
+crate-type = ["rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2.7.0", features = [] }
+
+[dependencies]
+mumbin-core = { path = "../crates/core" }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+tempfile = "3"
+tauri = { version = "2.12.0", default-features = false, features = ["wry", "compression", "common-controls-v6"] }
+tauri-plugin-dialog = "2"
+tauri-plugin-opener = "2"
+
+[target.'cfg(windows)'.dependencies]
+# The webview asks for permission before a page may read the clipboard; the program reads it itself.
+clipboard-win = "5"

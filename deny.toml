@@ -1,0 +1,40 @@
+# Settings for `cargo deny check` (run from the project root; also `npm run deny`).
+# It checks licences, banned or duplicated crates and where crates come from.
+# Security advisories are checked by `cargo audit` (see .cargo/audit.toml).
+
+[graph]
+# The program is built for Windows only; Linux/macOS-only crates in Cargo.lock are not judged.
+targets = [{ triple = "x86_64-pc-windows-msvc" }]
+
+[licenses]
+# Only licences that allow use in a closed, paid or source-available program without
+# asking for the program's own source (no GPL/AGPL/LGPL). Decision E-004 in .project/DECISIONS.md.
+allow = [
+    "MIT",
+    "Apache-2.0",
+    "BSD-3-Clause",
+    "Zlib",
+    "Unicode-3.0",
+    "CC0-1.0",
+    "MPL-2.0", # file-level copyleft; only build-time Tauri dependencies (cssparser, selectors), unchanged
+    "MIT-0",
+    "Unlicense",
+    "0BSD",
+    "BSL-1.0", # clipboard-win and error-code
+]
+confidence-threshold = 0.9
+
+[licenses.private]
+# The program's own crates carry no licence yet (open decision: licence of the product).
+ignore = true
+
+[bans]
+multiple-versions = "warn"
+wildcards = "deny"
+allow-wildcard-paths = true # our own crates are referenced by path
+highlight = "all"
+
+[sources]
+unknown-registry = "deny"
+unknown-git = "deny"
+allow-registry = ["https://github.com/rust-lang/crates.io-index"]

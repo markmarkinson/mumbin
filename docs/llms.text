@@ -1,0 +1,21 @@
+# Mumbin
+
+> Local, portable Windows notes with wiki links, attachments, tasks and optional encryption.
+
+Official product documentation. Version 0.1.0. Updated 2026-11-27.
+The app is source-available under its own license. It is not licensed as unrestricted open-source software.
+
+## Product facts
+
+- [English product facts](https://mumbin.com/en/product.md): Features, requirements, encryption, limits, license and original sources.
+- [Deutsche Produktdaten](https://mumbin.com/product.md): Funktionen, Systemanforderungen, Verschlüsselung, Grenzen, Lizenz und Originalquellen.
+
+## Website and documentation
+
+- [English website](https://mumbin.com/en/): Product presentation and download.
+- [Deutsche Website](https://mumbin.com/): Produktdarstellung und Download.
+- [English guides](https://mumbin.com/en/blog/): Usage and security guides.
+- [Deutscher Blog](https://mumbin.com/blog/): Anleitungen und Ratgeber.
+- [Sitemap](https://mumbin.com/sitemap.xml): Canonical website URLs.
+- [Official source repository](https://github.com/markmarkinson/mumbin): Source and tests.
+- [Official release](https://github.com/markmarkinson/mumbin/releases/tag/current): Executable and checksums.
